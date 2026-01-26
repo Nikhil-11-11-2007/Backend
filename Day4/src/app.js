@@ -2,8 +2,14 @@
 const express = require("express")
 
 const app = express() // server create ho jata hai
+
 app.use(express.json())
+
 const notes = []
+
+app.get("/", (req,res) => {
+    res.send("Hello World")
+})
 
 // POST Notes
 app.post("/notes", (req,res) => {
@@ -20,6 +26,7 @@ app.get("/notes", (req,res) => {
 
 // Delete Notes using Params
 // Delete/notes/1,2,3
+
 app.delete("/notes/:idx",(req,res) => {
     delete notes[req.params.idx]
     // console.log(req.params.idx);
