@@ -13,7 +13,28 @@ body,
   background-color: #222;
 }
 
+form{
+  display: flex;
+  padding: 2rem;
+  gap: 2rem;
+}
 
+form input{
+  font-size: 1.4rem;
+  padding: .2rem .7rem;
+  border-radius: .3rem;
+}
+
+form button{
+  padding: .5rem 1rem;
+  font-size: 1.3rem;
+  border-radius: .5rem;
+  cursor: pointer;
+}
+
+form button:active{
+  scale: .97;
+}
 
 .notes{
   display: flex;
@@ -30,6 +51,18 @@ body,
   justify-content: center;
   flex-direction: column;
   padding: 1rem 1rem;
+  gap: .5rem;
   border-radius: 1rem;
   color: whitesmoke;
+}
+
+.note button{
+  padding: .4rem .8rem;
+  font-size: 1rem;
+  border-radius: .5rem;
+  border: none;
+}
+
+.note button:active{
+  scale: .97;
 }
