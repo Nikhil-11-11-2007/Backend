@@ -55,4 +55,26 @@ async function createPostController(req, res) {
 
 }
 
-module.exports = { createPostController }
+async function getPostController(req,res) {
+    const token = req.cookies.token
+
+    if(!token) {
+        return res.status(401).json({
+            message: "token not provided"
+        })
+    }
+
+    let decode;
+
+    try{
+        decode = jwt.verify(token, process.env.JWT_SECRET)
+    } catch (err) {
+        return res.status(401).json({
+            message: "Invalid token"
+        })
+    }
+
+    
+}
+
+module.exports = { createPostController , getPostController }
