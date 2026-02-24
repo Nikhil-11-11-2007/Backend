@@ -83,7 +83,7 @@ async function likePostController(req, res) {
 
     const post = await postModel.findById(postId)
 
-    if(!post) {
+    if (!post) {
         return res.status(404).json({
             message: "Post not found"
         })
@@ -100,4 +100,36 @@ async function likePostController(req, res) {
     })
 }
 
-module.exports = { createPostController, getPostController, getPostDetails, likePostController }
+async function getFeedController(req,res) {
+
+    const user = req.user
+
+    const posts = await Promise.all((await postModel.find().populate("user").lean())
+    .map(async (post) => {
+
+        // type of post mongooseObj
+        // so we coudnot directly add new propery jaise isLiked iske liye lean ko use krte hai
+
+        const isLiked = await likeModel.findOne({
+            user: user.username,
+            post: post._id
+        })
+
+        post.isLiked = Boolean(isLiked)
+
+        return post
+    }))
+
+    res.status(200).json({
+        message: "Post fetched successfully",
+        posts
+    })
+}
+
+module.exports = {
+    createPostController,
+    getPostController,
+    getPostDetails,
+    likePostController,
+    getFeedController
+}

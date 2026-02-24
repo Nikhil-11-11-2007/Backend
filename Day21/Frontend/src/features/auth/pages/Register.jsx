@@ -10,7 +10,7 @@ const Register = () => {
 
     const navigate = useNavigate()
 
-    const { user, loading, handleRegister } = useAuth()
+    const { loading, handleRegister } = useAuth()
 
     const handleSubmit = async (e) => {
         e.preventDefault()
