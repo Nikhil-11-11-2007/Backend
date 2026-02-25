@@ -1,7 +1,8 @@
 .feed-page {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: center;
+    flex-direction: column;
 
     .feed {
         max-width: 390px;
@@ -64,6 +65,10 @@
 
                 .like{
                     background-color: red;
+                }
+                
+                .unlike{
+                    background-color: #fff;
                 }
                 
                 button {

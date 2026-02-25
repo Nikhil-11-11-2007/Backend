@@ -100,25 +100,47 @@ async function likePostController(req, res) {
     })
 }
 
-async function getFeedController(req,res) {
+async function unLikePostController(req, res) {
+    const posId = req.params.postId
+    const username = req.user.username
+
+    const isLiked = await likeModel.findOne({
+        post: posId,
+        user: username
+    })
+
+    if(!isLiked) {
+        return res.status(400).json({
+            message: "post Didn't like"
+        })
+    }
+
+    await likeModel.findByIdAndDelete({_id: isLiked._id})
+
+    return res.status(200).json({
+        message: "post unliked usccessfully"
+    })
+}
+
+async function getFeedController(req, res) {
 
     const user = req.user
 
-    const posts = await Promise.all((await postModel.find().populate("user").lean())
-    .map(async (post) => {
+    const posts = await Promise.all((await postModel.find().populate("user").sort({ _id: -1 }).lean())
+        .map(async (post) => {
 
-        // type of post mongooseObj
-        // so we coudnot directly add new propery jaise isLiked iske liye lean ko use krte hai
+            // type of post mongooseObj
+            // so we coudnot directly add new propery jaise isLiked iske liye lean ko use krte hai
 
-        const isLiked = await likeModel.findOne({
-            user: user.username,
-            post: post._id
-        })
+            const isLiked = await likeModel.findOne({
+                user: user.username,
+                post: post._id
+            })
 
-        post.isLiked = Boolean(isLiked)
+            post.isLiked = Boolean(isLiked)
 
-        return post
-    }))
+            return post
+        }))
 
     res.status(200).json({
         message: "Post fetched successfully",
@@ -131,5 +153,6 @@ module.exports = {
     getPostController,
     getPostDetails,
     likePostController,
-    getFeedController
+    getFeedController,
+    unLikePostController
 }
