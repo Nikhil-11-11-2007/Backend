@@ -1,6 +1,5 @@
 const express = require("express")
 const cookieParser = require("cookie-parser")
-const authRoutes = require("./routes/auth.routes")
 const cors = require("cors")
 
 const app = express()
@@ -11,8 +10,12 @@ app.use(cors({
     credentials: true
 }))
 
+const authRoutes = require("./routes/auth.routes")
+const songRoutes = require("./routes/song.routes")
+
 
 app.use("/api/auth", authRoutes)
+app.use("/api/songs", songRoutes)
 
 // https://drive.google.com/drive/folders/163GI6skYo0O-JJibT_dXmcUrgsHwMDqk
 
