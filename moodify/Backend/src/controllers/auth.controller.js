@@ -1,7 +1,7 @@
 const userModel = require("../models/user.model")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
-const blacklistModel = require("../models/blacklist.model")
+// const blacklistModel = require("../models/blacklist.model")
 const redis = require("../config/cache")
 
 async function registerUser(req, res) {
@@ -70,9 +70,9 @@ async function loginUser(req, res) {
         })
     }
 
-    const isValidPasswor = await bcrypt.compare(password, user.password)
+    const isValidPassword = await bcrypt.compare(password, user.password)
 
-    if (!isValidPasswor) {
+    if (!isValidPassword) {
         return res.status(400).json({
             message: "invalid credentials"
         })
