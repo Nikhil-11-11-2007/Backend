@@ -1,6 +1,7 @@
 const express = require("express")
 const cookieParser = require("cookie-parser")
 const cors = require("cors")
+const handleError = require("./middlewares/error.middleware")
 
 const app = express()
 app.use(express.json())
@@ -16,6 +17,8 @@ const songRoutes = require("./routes/song.routes")
 
 app.use("/api/auth", authRoutes)
 app.use("/api/songs", songRoutes)
+
+app.use(handleError)
 
 // https://drive.google.com/drive/folders/163GI6skYo0O-JJibT_dXmcUrgsHwMDqk
 

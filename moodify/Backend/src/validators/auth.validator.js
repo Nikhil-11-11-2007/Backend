@@ -1,18 +1,22 @@
 const { body } = require("express-validator")
 
+
 const registerValidation = [
     body("username")
         .trim()
+        .isString()
         .notEmpty()
         .withMessage("Username is required"),
 
     body("email")
         .trim()
+        .isString()
         .isEmail()
         .withMessage("Valid email required"),
 
     body("password")
         .trim()
+        .isString()
         .isLength({ min: 6 })
         .withMessage("Password must be al least 6 characters")
 ]

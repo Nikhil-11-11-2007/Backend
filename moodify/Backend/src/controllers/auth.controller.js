@@ -1,10 +1,9 @@
 const userModel = require("../models/user.model")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
-// const blacklistModel = require("../models/blacklist.model")
 const redis = require("../config/cache")
 
-async function registerUser(req, res) {
+async function registerUser(req, res, next) {
 
     const { username, email, password } = req.body
 
@@ -14,11 +13,15 @@ async function registerUser(req, res) {
             { username }
         ]
     })
+    
 
-    if (isUserAlreadyRegistered) {
-        return res.status(400).json({
-            message: "User with the same email or username already exists"
-        })
+    try{
+        if(isUserAlreadyRegistered){
+            throw new Error("User with the same email or username already exists")
+        }
+    } catch (err) {
+        err.status = 400
+        next(err)
     }
 
     const hash = await bcrypt.hash(password, 10)
