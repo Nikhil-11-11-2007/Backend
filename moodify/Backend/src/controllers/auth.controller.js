@@ -14,7 +14,6 @@ async function registerUser(req, res, next) {
         ]
     })
     
-
     try{
         if(isUserAlreadyRegistered){
             throw new Error("User with the same email or username already exists")

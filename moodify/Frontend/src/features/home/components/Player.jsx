@@ -1,16 +1,17 @@
-import React, { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import '../style/player.scss'
 import { useSong } from '../hooks/useSong'
 
 const Player = () => {
   const { song } = useSong()
+  const currentSong = song?.[0]
   const audioRef = useRef(null)
-  if (!song) return null
 
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const [speed, setSpeed] = useState(1)
+
 
   useEffect(() => {
     const audio = audioRef.current
@@ -30,6 +31,8 @@ const Player = () => {
       audio.removeEventListener('ended', handleEnded)
     }
   }, [])
+
+  if (!currentSong) return null
 
   const handlePlayPause = () => {
     const audio = audioRef.current
@@ -82,64 +85,139 @@ const Player = () => {
   const progressPercentage = duration ? (currentTime / duration) * 100 : 0
 
   return (
-    <div className="player-container">
-      <audio ref={audioRef} src={song.url} />
-
-      {/* Poster Image */}
-      <div className="player-poster">
-        <img src={song.posterUrl} alt={song.title} />
+    <div className="musics">
+      <div className="play-list">
+        <div className="text">
+          <h4>Welcome Back</h4>
+          <h1>Moodify</h1>
+        </div>
+        <div className="songs">
+          <h1>playlist</h1>
+          <div className="song">
+            <img src="https://i.pinimg.com/736x/e9/42/75/e94275abfe9f35338d9dd25a5e7217ce.jpg" alt="" />
+            <h3>song1</h3>
+          </div>
+          <div className="song">
+            <img src="https://i.pinimg.com/736x/e9/42/75/e94275abfe9f35338d9dd25a5e7217ce.jpg" alt="" />
+            <h3>song2</h3>
+          </div>
+          <div className="song">
+            <img src="https://i.pinimg.com/736x/e9/42/75/e94275abfe9f35338d9dd25a5e7217ce.jpg" alt="" />
+            <h3>song2</h3>
+          </div>
+          <div className="song">
+            <img src="https://i.pinimg.com/736x/e9/42/75/e94275abfe9f35338d9dd25a5e7217ce.jpg" alt="" />
+            <h3>song2</h3>
+          </div>
+          <div className="song">
+            <img src="https://i.pinimg.com/736x/e9/42/75/e94275abfe9f35338d9dd25a5e7217ce.jpg" alt="" />
+            <h3>song2</h3>
+          </div>
+          <div className="song">
+            <img src="https://i.pinimg.com/736x/e9/42/75/e94275abfe9f35338d9dd25a5e7217ce.jpg" alt="" />
+            <h3>song2</h3>
+          </div>
+          <div className="song">
+            <img src="https://i.pinimg.com/736x/e9/42/75/e94275abfe9f35338d9dd25a5e7217ce.jpg" alt="" />
+            <h3>song2</h3>
+          </div>
+          <div className="song">
+            <img src="https://i.pinimg.com/736x/e9/42/75/e94275abfe9f35338d9dd25a5e7217ce.jpg" alt="" />
+            <h3>song2</h3>
+          </div>
+          <div className="song">
+            <img src="https://i.pinimg.com/736x/e9/42/75/e94275abfe9f35338d9dd25a5e7217ce.jpg" alt="" />
+            <h3>song2</h3>
+          </div>
+          <div className="song">
+            <img src="https://i.pinimg.com/736x/e9/42/75/e94275abfe9f35338d9dd25a5e7217ce.jpg" alt="" />
+            <h3>song2</h3>
+          </div>
+          <div className="song">
+            <img src="https://i.pinimg.com/736x/e9/42/75/e94275abfe9f35338d9dd25a5e7217ce.jpg" alt="" />
+            <h3>song2</h3>
+          </div>
+          <div className="song">
+            <img src="https://i.pinimg.com/736x/e9/42/75/e94275abfe9f35338d9dd25a5e7217ce.jpg" alt="" />
+            <h3>song2</h3>
+          </div>
+          <div className="song">
+            <img src="https://i.pinimg.com/736x/e9/42/75/e94275abfe9f35338d9dd25a5e7217ce.jpg" alt="" />
+            <h3>song2</h3>
+          </div>
+          <div className="song">
+            <img src="https://i.pinimg.com/736x/e9/42/75/e94275abfe9f35338d9dd25a5e7217ce.jpg" alt="" />
+            <h3>song2</h3>
+          </div>
+          <div className="song">
+            <img src="https://i.pinimg.com/736x/e9/42/75/e94275abfe9f35338d9dd25a5e7217ce.jpg" alt="" />
+            <h3>song2</h3>
+          </div>
+          <div className="song">
+            <img src="https://i.pinimg.com/736x/e9/42/75/e94275abfe9f35338d9dd25a5e7217ce.jpg" alt="" />
+            <h3>song2</h3>
+          </div>
+        </div>
       </div>
+      <div className="player-container">
+        <audio ref={audioRef} src={currentSong?.url} />
 
-      {/* Song Info */}
-      <div className="player-info">
-        <h3 className="song-title">{song.title}</h3>
-        <p className="song-mood">{song.mood}</p>
-      </div>
+        {/* Poster Image */}
+        <div className="player-poster">
+          <img src={currentSong.posterUrl} alt={currentSong.title} />
+        </div>
 
-      {/* Progress Bar */}
-      <div className="progress-bar-container">
-        <span className="time">{formatTime(currentTime)}</span>
-        <input
-          type="range"
-          min="0"
-          max="100"
-          value={progressPercentage}
-          onChange={handleProgressChange}
-          className="progress-bar"
-        />
-        <span className="time">{formatTime(duration)}</span>
-      </div>
+        {/* Song Info */}
+        <div className="player-info">
+          <h3 className="song-title">{currentSong.title}</h3>
+          <p className="song-mood">{currentSong.mood}</p>
+        </div>
 
-      {/* Controls */}
-      <div className="controls">
-        <button className="control-btn backward" onClick={handleBackward} title="Backward 5 sec">
-          <span>⏪ -5s</span>
-        </button>
+        {/* Progress Bar */}
+        <div className="progress-bar-container">
+          <span className="time">{formatTime(currentTime)}</span>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={progressPercentage}
+            onChange={handleProgressChange}
+            className="progress-bar"
+          />
+          <span className="time">{formatTime(duration)}</span>
+        </div>
 
-        <button
-          className={`control-btn play-pause ${isPlaying ? 'playing' : ''}`}
-          onClick={handlePlayPause}
-          title={isPlaying ? 'Pause' : 'Play'}
-        >
-          <span>{isPlaying ? '⏸' : '▶'}</span>
-        </button>
+        {/* Controls */}
+        <div className="controls">
+          <button className="control-btn backward" onClick={handleBackward} title="Backward 5 sec">
+            <span>⏪ -5s</span>
+          </button>
 
-        <button className="control-btn forward" onClick={handleForward} title="Forward 5 sec">
-          <span>+5s ⏩</span>
-        </button>
-      </div>
+          <button
+            className={`control-btn play-pause ${isPlaying ? 'playing' : ''}`}
+            onClick={handlePlayPause}
+            title={isPlaying ? 'Pause' : 'Play'}
+          >
+            <span>{isPlaying ? '⏸' : '▶'}</span>
+          </button>
 
-      {/* Speed Control */}
-      <div className="speed-control">
-        <label>Speed:</label>
-        <select value={speed} onChange={(e) => handleSpeedChange(parseFloat(e.target.value))}>
-          <option value={0.5}>0.5x</option>
-          <option value={0.75}>0.75x</option>
-          <option value={1}>1x</option>
-          <option value={1.25}>1.25x</option>
-          <option value={1.5}>1.5x</option>
-          <option value={2}>2x</option>
-        </select>
+          <button className="control-btn forward" onClick={handleForward} title="Forward 5 sec">
+            <span>+5s ⏩</span>
+          </button>
+        </div>
+
+        {/* Speed Control */}
+        <div className="speed-control">
+          <label>Speed:</label>
+          <select value={speed} onChange={(e) => handleSpeedChange(parseFloat(e.target.value))}>
+            <option value={0.5}>0.5x</option>
+            <option value={0.75}>0.75x</option>
+            <option value={1}>1x</option>
+            <option value={1.25}>1.25x</option>
+            <option value={1.5}>1.5x</option>
+            <option value={2}>2x</option>
+          </select>
+        </div>
       </div>
     </div>
   )

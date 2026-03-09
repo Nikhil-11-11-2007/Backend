@@ -1,4 +1,4 @@
-.button{
+.button {
     background-color: #b43709;
     border: none;
     color: white;
@@ -9,6 +9,18 @@
     cursor: pointer;
 }
 
-.button:active{
+.detect-btn {
+    background: linear-gradient(-90deg, #58345b, rgb(93, 4, 122));
+    border: none;
+    color: white;
+    padding: .8rem 2rem;
+    font-size: 1.2rem;
+    border-radius: 1rem;
+    transition: all .4s ease;
+    cursor: pointer;
+}
+
+.button,.detect-btn:active {
     transform: scale(0.9);
 }
+

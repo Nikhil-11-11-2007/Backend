@@ -17,8 +17,8 @@ const registerValidation = [
     body("password")
         .trim()
         .isString()
-        .isLength({ min: 6 })
-        .withMessage("Password must be al least 6 characters")
+        .isLength({ min: 6, max: 12 })
+        .withMessage("Password should be between 6 and 12 characters")
 ]
 
 const loginValidation = [
