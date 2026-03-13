@@ -2,7 +2,6 @@ import userModel from "../models/user.model.js";
 import jwt from 'jsonwebtoken';
 import { sendEmail } from "../services/mail.service.js";
 
-// route - POST /api/auth/register
 // desc - register a new user
 // access - Public
 // body - { username, email, password }
@@ -57,7 +56,6 @@ export async function register(req, res) {
 
 }
 
-// route - POST /api/auth/login
 // desc - login user and return jwt token
 // access - public
 // body - { email, password }
@@ -68,8 +66,8 @@ export async function login(req, res) {
 
     const user = await userModel.findOne({ email })
 
-    if(!user){
-        res.status(400).json({
+    if (!user) {
+        return res.status(400).json({
             message: "invalid email or password",
             success: false,
             err: "User not found"
@@ -78,7 +76,7 @@ export async function login(req, res) {
 
     const isPasswordMatch = await user.comparePassword(password);
 
-    if(!isPasswordMatch){
+    if (!isPasswordMatch) {
         return res.status(400).json({
             message: "Invalid email or password",
             success: false,
@@ -86,7 +84,7 @@ export async function login(req, res) {
         })
     }
 
-    if(!user.verified){
+    if (!user.verified) {
         return res.status(400).json({
             message: "please verify your email before logged in",
             success: false,
@@ -100,7 +98,7 @@ export async function login(req, res) {
             username: user.username
         },
         process.env.JWT_SECRET,
-        {expiresIn: "7d"}
+        { expiresIn: "7d" }
     )
 
     res.cookie("token", token)
@@ -117,17 +115,16 @@ export async function login(req, res) {
 
 }
 
-// route - GET /api/auth/get-me
 // desc - get current user loggedin details
 // access - private
 
-export async function getMe(req,res) {
-    
+export async function getMe(req, res) {
+
     const userId = req.user.id
 
     const user = await userModel.findById(userId).select("-password")
 
-    if(!user) {
+    if (!user) {
         return res.status(404).json({
             message: "User not found",
             success: false,
@@ -143,11 +140,9 @@ export async function getMe(req,res) {
 
 }
 
-// route - GET /api/auth/verify-email
 // desc - verify users email address
 // access - public
 // query - { token }
-
 
 export async function verifyEmail(req, res) {
 
@@ -163,6 +158,14 @@ export async function verifyEmail(req, res) {
                 success: false,
                 err: "user not found"
             })
+        }
+
+        const html2 = `<h1>Email already verified</h1>
+<p>You can login to your account.</p>
+<a href="http://localhost:3000/login">Go to Login</a>`
+
+        if (user.verified) {
+            return res.send(html2)
         }
 
         user.verified = true;
@@ -186,5 +189,62 @@ export async function verifyEmail(req, res) {
     }
 
 
+
+}
+
+// desc - resend verification email
+// access - public
+// body - { email }
+
+export async function resendVerification(req, res) {
+
+    const { email } = req.body
+
+    const user = await userModel.findOne({ email })
+
+    if (!user) {
+        return res.status(404).json({
+            message: "User not found",
+            success: false,
+            err: "USER_NOT_FOUND"
+        })
+    }
+
+    if (user.verified) {
+        return res.status(400).json({
+            message: "Email already verified",
+            success: false,
+        })
+    }
+
+    const emailVerificationToken = jwt.sign(
+        {
+            email: user.email
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" }
+    )
+
+    await sendEmail({
+        to: email,
+        subject: "Resend Email Verification",
+        html: `
+            <p>Hi ${user.username},</p>
+            <p>Please verify your email by clicking the link below:</p>
+            <a href="http://localhost:3000/api/auth/verify-email?token=${emailVerificationToken}">
+            Verify Email
+            </a>
+        `
+    });
+
+    res.status(200).json({
+        message: "Verification email sent successfully",
+        success: true,
+        user: {
+            id: user._id,
+            user: user.username,
+            email: user.email,
+        }
+    })
 
 }

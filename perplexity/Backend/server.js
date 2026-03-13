@@ -5,6 +5,7 @@ import { testAi } from "./src/services/ai.service.js";
 
 
 const PORT = process.env.PORT || 8000;
+
 testAi()
 
 connectDB()

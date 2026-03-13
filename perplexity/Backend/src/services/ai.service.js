@@ -7,6 +7,10 @@ const model = new ChatGoogleGenerativeAI({
 });
 
 export async function testAi() {
-    const response  = await model.invoke("what is the color of tomato")
+    try{
+      const response  = await model.invoke("what is the captial of india ?")
     console.log(response.text)
+    } catch (err){
+      console.log(err);
+    }
 }
