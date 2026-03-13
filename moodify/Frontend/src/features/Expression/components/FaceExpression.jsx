@@ -2,10 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { detect, init } from "../utils/utils";
 import "../../home/style/expression.scss"
 
-export default function FaceExpression({ onClick = () => {}}) {
+export default function FaceExpression({ onClick = () => { } }) {
     const videoRef = useRef(null);
     const landmarkerRef = useRef(null);
     const stremRef = useRef(null)
+    const [error, setError] = useState("")
     const [expression, setExpression] = useState("Detecting...")
 
     useEffect(() => {
@@ -32,7 +33,11 @@ export default function FaceExpression({ onClick = () => {}}) {
     async function handleClick() {
         const expression = detect({ landmarkerRef, videoRef, setExpression })
         console.log(expression);
-        
+        if (!expression) {
+            setError("Can not detect your face");
+            return
+        }
+        setError("")
         // onclick(expression)
         onClick(expression)
     }
@@ -45,6 +50,8 @@ export default function FaceExpression({ onClick = () => {}}) {
                 playsInline
             />
             <h2>{expression}</h2>
+            {error && <h1>{error}</h1>}
+
             <button className="detect-btn" onClick={handleClick} >Detect expression</button>
         </div>
     )

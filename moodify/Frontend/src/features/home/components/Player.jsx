@@ -92,10 +92,9 @@ const Player = () => {
           <h1>Moodify</h1>
         </div>
         <div className="songs">
-          <h1>playlist</h1>
           <div className="song">
             <img src="https://i.pinimg.com/736x/e9/42/75/e94275abfe9f35338d9dd25a5e7217ce.jpg" alt="" />
-            <h3>song1</h3>
+            <h3>song1akjdsvsdk</h3>
           </div>
           <div className="song">
             <img src="https://i.pinimg.com/736x/e9/42/75/e94275abfe9f35338d9dd25a5e7217ce.jpg" alt="" />

@@ -20,6 +20,7 @@
 
       .song{
         display: flex;
+        justify-content: space-between;
         gap: 2rem;
 
         img{
@@ -29,18 +30,19 @@
         }
       }
     }
+
+    .songs::-webkit-scrollbar{
+      display: none;
+    }
   }
 
   .player-container {
-    // display: flex;
-    // flex-direction: column;
     gap: 1.5rem;
     padding: 2rem;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border-radius: 15px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     max-width: 400px;
-    // margin: 2rem auto;
     color: white;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
