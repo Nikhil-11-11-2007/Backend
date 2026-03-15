@@ -6,11 +6,3 @@ const model = new ChatGoogleGenerativeAI({
   apiKey: process.env.GEMINI_API_KEY
 });
 
-export async function testAi() {
-    try{
-      const response  = await model.invoke("what is the captial of india ?")
-    console.log(response.text)
-    } catch (err){
-      console.log(err);
-    }
-}
