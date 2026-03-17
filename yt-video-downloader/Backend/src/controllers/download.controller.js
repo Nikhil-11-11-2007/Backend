@@ -4,7 +4,8 @@ import { downloadYoutubeVideo } from "../services/youtubeService.js"
 export async function downloadVideo(req,res,next) {
     try{
         const {url} = req.query
-
+         console.log(url);
+         
         if(!url) {
             const err = new Error("URL is required")
             err.status = 400

@@ -3,10 +3,11 @@ import express from 'express'
 import authRouter from './routes/auth.routes.js';
 import morgan from "morgan"
 import cors from "cors"
+import chatRouter from './routes/chat.routes.js';
 
 const app = express()
 
-// middleware
+// middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -21,7 +22,10 @@ app.get("/", (req, res) => {
     res.json({ message: "Server is running" });
 });
 
+// Routers
+
 app.use("/api/auth", authRouter)
+app.use("/api/chats", chatRouter)
 
 
 export default app;
