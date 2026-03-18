@@ -1,21 +1,12 @@
-import express from 'express'
-import downloadRouter from './routes/download.route.js';
-import errorMiddleware from './middlewares/error.middleware.js';
+import express from "express";
+import cors from "cors";
+import downloadRoutes from "./routes/download.route.js";
 
+const app = express();
 
-const app = express()
-
-// miiddlewares
+app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }))
 
-app.use("/api", downloadRouter)
-
-app.get("/", (req, res) => {
-    res.send("YouTube Downloader API Running")
-})
-
-
-app.use(errorMiddleware)
+app.use("/api", downloadRoutes);
 
 export default app
