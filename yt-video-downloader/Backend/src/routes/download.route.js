@@ -1,8 +1,8 @@
-import express from "express"
-import { downloadVideo } from "../controllers/download.controller.js";
+import express from "express";
+import { downloadYoutubeVideo } from "../controllers/download.controller.js";
 
-const downloadRouter = express.Router()
+const router = express.Router();
 
-downloadRouter.get("/download", downloadVideo)
+router.post("/download", downloadYoutubeVideo);
 
-export default downloadRouter;
+export default router;

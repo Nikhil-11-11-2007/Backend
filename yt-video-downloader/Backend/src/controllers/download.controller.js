@@ -1,20 +1,13 @@
-import { downloadYoutubeVideo } from "../services/youtubeService.js"
 
+export async function downloadYoutubeVideo(req, res) {
+    const { url } = req.body;
 
-export async function downloadVideo(req,res,next) {
-    try{
-        const {url} = req.query
-         console.log(url);
-         
-        if(!url) {
-            const err = new Error("URL is required")
-            err.status = 400
-            throw err
-        }
-
-        await downloadYoutubeVideo(url,res)
-    } catch (err) {
-        err.status = err.status || 500
-        next(err)
+    if (!url) {
+        return res.status(400).json({ error: "URL required" });
     }
+
+    // 👉 direct redirect to downloader site
+    const redirectUrl = `https://www.ytmp3.nu/ytmp3/?url=${url}`;
+
+    return res.json({ downloadUrl: redirectUrl });
 }
