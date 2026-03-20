@@ -1,6 +1,8 @@
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { ChatMistralAI } from '@langchain/mistralai';
-import { HumanMessage, SystemMessage, AIMessage } from 'langchain'
+import { HumanMessage, SystemMessage, AIMessage, tool, createAgent } from 'langchain'
+import * as z from "zod"
+import { searchInternet } from "./internet.service.js";
 
 
 const geminiModel = new ChatGoogleGenerativeAI({
@@ -13,13 +15,49 @@ const mistralModel = new ChatMistralAI({
   apiKey: process.env.MISTRAL_API_KEY
 })
 
-export async function generateResponse(messages) {
-  const response = await geminiModel.invoke(messages.map(msg => {
-    if (msg.role == "user") return new HumanMessage(msg.content)
-    else if (msg.role == "ai") return new AIMessage(msg.content)
-  }))
+const searchInternetTool = tool(
+  searchInternet,
+  {
+    name: "searchInternet",
+    description: "Use this tool to get the latest information from the internet.",
+    schema: z.object({
+      query: z.string().describe("The search query to look up on the internet.")
+    })
+  }
+)
 
-  return response.text
+const agent = createAgent({
+  model: geminiModel,
+  tools: [searchInternetTool]
+})
+
+export async function generateResponse(messages) {
+
+  const response = await agent.invoke({
+    messages: [
+      new SystemMessage(`
+You are a highly knowledgeable AI assistant.
+
+Your responses should:
+- Be detailed, structured, and easy to understand
+- Include explanations, context, and additional insights
+- Expand on the topic instead of giving short answers
+- Use bullet points or paragraphs when helpful
+- If real-time data is needed, use the "searchInternet" tool and explain the results thoroughly
+
+Avoid giving overly short or one-line answers unless explicitly asked.
+`),
+      ...(messages.map(msg => {
+        if (msg.role == "user") {
+          return new HumanMessage(msg.content)
+        } else if (msg.role == "ai") {
+          return new AIMessage(msg.content)
+        }
+      }))
+    ]
+  })
+
+  return response.messages[response.messages.length - 1].text;
 }
 
 export async function generateChatTitle(message) {

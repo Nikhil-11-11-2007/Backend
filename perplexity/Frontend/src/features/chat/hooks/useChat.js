@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux"
 import { initializeSocketConnection } from "../service/chat.socket"
-import { addMessages, addNewMessage, createNewChat, setChats, setCurrentChatId, setLoading } from "../chat.slice"
-import { getChats, getMessages, sendMessage } from "../service/chat.api"
+import { addMessages, addNewMessage, createNewChat, setChats, setCurrentChatId, setLoading, deleteChat } from "../chat.slice"
+import { getChats, getMessages, sendMessage, deleteChat as deleteChatAPI } from "../service/chat.api"
 
 export const useChat = () => {
 
@@ -9,25 +9,32 @@ export const useChat = () => {
 
     async function handleSendMessage({ message, chatId }) {
         dispatch(setLoading(true))
-        const data = await sendMessage({ message, chatId })
+        try {
+            const data = await sendMessage({ message, chatId })
 
-        const { chat, aimessage } = data
+            const { chat, aimessage } = data
+            if (!chatId)
+                dispatch(createNewChat({
+                    chatId: chat._id,
+                    title: chat.title
+                }))
 
-        dispatch(createNewChat({
-            chatId: chat._id,
-            title: chat.title
-        }))
-        dispatch(addNewMessage({
-            chatId: chat._id,
-            content: message,
-            role: "user"
-        }))
-        dispatch(addNewMessage({
-            chatId: chat._id,
-            content: aimessage.content,
-            role: aimessage.role
-        }))
-        dispatch(setCurrentChatId(chat._id))
+            dispatch(addNewMessage({
+                chatId: chatId || chat._id,
+                content: message,
+                role: "user"
+            }))
+            dispatch(addNewMessage({
+                chatId: chatId || chat._id,
+                content: aimessage.content,
+                role: aimessage.role
+            }))
+            dispatch(setCurrentChatId(chat._id))
+        } catch (error) {
+            console.error("Error sending message:", error)
+        } finally {
+            dispatch(setLoading(false))
+        }
     }
 
     async function handleGetChats() {
@@ -45,30 +52,50 @@ export const useChat = () => {
             return acc
 
         }, {})))
+        dispatch(setLoading(false))
     }
 
-    async function handleOpenchat(chatId) {
-        const data = await getMessages(chatId)
+    async function handleOpenchat(chatId, chats) {
 
-        const {messages} = data
+        if (chats[chatId]?.messages.length === 0) {
 
-        const formattedMessages = messages.map(msg => ({
-            content: msg.content,
-            role: msg.role
-        }))
+            const data = await getMessages(chatId)
 
-        dispatch(addMessages({
-            chatId,
-            messages: formattedMessages,
-        }))
+            const { messages } = data
+
+            const formattedMessages = messages.map(msg => ({
+                content: msg.content,
+                role: msg.role
+            }))
+
+            dispatch(addMessages({
+                chatId,
+                messages: formattedMessages,
+            }))
+        }
 
         dispatch(setCurrentChatId(chatId))
+    }
+
+    async function handleDeleteChat(chatId) {
+        try {
+            await deleteChatAPI(chatId)
+            dispatch(deleteChat({ chatId }))
+        } catch (error) {
+            console.error("Error deleting chat:", error)
+        }
+    }
+
+    function handleNewChat() {
+        dispatch(setCurrentChatId(null))
     }
 
     return {
         initializeSocketConnection,
         handleSendMessage,
         handleGetChats,
-        handleOpenchat
+        handleOpenchat,
+        handleDeleteChat,
+        handleNewChat
     }
 }
