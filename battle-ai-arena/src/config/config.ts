@@ -1,5 +1,5 @@
-import { config } from "dotenv";
-config()
+import { config as dotenvConfig } from "dotenv";
+dotenvConfig()
 
 /**
  * GOOGLE_API_KEY:
