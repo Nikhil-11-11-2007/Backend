@@ -32,4 +32,23 @@
     background-color: var(--color-surface);
     color: var(--color-on-surface);
   }
+
+  .dark {
+    --color-surface: #121212;
+    --color-surface-container-lowest: #000000;
+    --color-surface-container-low: #1e1e1e;
+    --color-surface-container: #232323;
+    --color-surface-container-high: #2b2b2b;
+    --color-surface-bright: #383838;
+    
+    --color-primary: #a1a1a1;
+    --color-primary-dim: #8b8b8b;
+    --color-primary-fixed-dim: #5c5c5c;
+    --color-on-primary: #121212;
+    
+    --color-secondary-container: #2b334a;
+    --color-on-surface: #e1e3e4;
+    --color-outline: #8c9295;
+    --color-outline-variant: #40484b;
+  }
 }
