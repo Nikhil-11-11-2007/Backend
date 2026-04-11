@@ -35,7 +35,7 @@ export default function Login() {
                     alt="Abstract dark environment"
                     className="absolute inset-0 w-full h-full object-cover opacity-80"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-12">
+                <div className="left-bottom absolute inset-0  flex flex-col justify-end p-12">
                     <div className="w-10 h-10 bg-[#E8440A] rounded-lg mb-6 flex items-center justify-center shadow-lg shadow-[#E8440A]/20">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
                             <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
@@ -65,7 +65,7 @@ export default function Login() {
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                            <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Email <span className="lowercase normal-case">Address</span></label>
+                            <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Email <span className="lowercase">Address</span></label>
                             <input name="email" type="email" value={form.email} onChange={handleChange} className="w-full bg-[#181818] border border-[#252525] rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-[#E8440A] transition-colors" placeholder="john@example.com" required />
                         </div>
                         <div>
@@ -77,8 +77,8 @@ export default function Login() {
                             <a href="#" className="text-xs text-gray-400 hover:text-white transition-colors">Forgot password?</a>
                         </div>
 
-                        <button type="submit" className="w-full bg-[#E8440A] hover:bg-[#FF5722] text-white text-sm font-semibold rounded-xl py-3 mt-4 transition-all hover:shadow-[0_4px_16px_rgba(232,68,10,0.3)] hover:-translate-y-0.5 active:translate-y-0">
-                            Sign In
+                        <button type="submit" className="w-full cursor-pointer bg-[#E8440A] hover:bg-[#FF5722] text-white text-sm font-semibold rounded-xl py-3 mt-4 transition-all hover:shadow-[0_4px_16px_rgba(232,68,10,0.3)] hover:-translate-y-0.5 active:translate-y-0">
+                            Login
                         </button>
                     </form>
                 </div>

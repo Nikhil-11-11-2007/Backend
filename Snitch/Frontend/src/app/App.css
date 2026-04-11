@@ -1,1 +1,10 @@
 @import "tailwindcss";
+
+.left-bottom{
+    background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.9),
+    rgba(0, 0, 0, 0.4),
+    rgba(0, 0, 0, 0)
+  );
+}

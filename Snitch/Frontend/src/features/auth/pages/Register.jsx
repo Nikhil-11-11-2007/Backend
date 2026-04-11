@@ -38,7 +38,7 @@ export default function Register() {
                     alt="Abstract dark environment"
                     className="absolute inset-0 w-full h-full object-cover opacity-80"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-12">
+                <div className="left-bottom absolute inset-0 flex flex-col justify-end p-12">
                     <div className="w-10 h-10 bg-[#E8440A] rounded-lg mb-6 flex items-center justify-center shadow-lg shadow-[#E8440A]/20">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
                             <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
@@ -92,8 +92,12 @@ export default function Register() {
                             </div>
                         </label>
 
-                        <button type="submit" className="w-full bg-[#E8440A] hover:bg-[#FF5722] text-white text-sm font-semibold rounded-xl py-3 mt-2 transition-all hover:shadow-[0_4px_16px_rgba(232,68,10,0.3)] hover:-translate-y-0.5 active:translate-y-0">
-                            Create Account
+                        <a href="/api/auth/google" className='w-full cursor-pointer hover:bg-[#228dff] text-white text-sm font-semibold rounded-xl py-1.5 px-2 mt-1 transition-all hover:shadow-[0_4px_16px_rgba(232,68,10,0.3)] hover:-translate-y-0.5 active:translate-y-0'>
+                            Continue with Google
+                        </a>
+
+                        <button type="submit" className="w-full bg-[#E8440A] cursor-pointer hover:bg-[#FF5722] text-white text-sm font-semibold rounded-xl py-3 mt-2 transition-all hover:shadow-[0_4px_16px_rgba(232,68,10,0.3)] hover:-translate-y-0.5 active:translate-y-0">
+                            Sign Up
                         </button>
                     </form>
                 </div>
