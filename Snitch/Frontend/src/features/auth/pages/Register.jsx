@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { useAuth } from '../hook/useAuth';
+import ContinueWithGoogle from '../components/ContinueWithGoogle';
 
 export default function Register() {
 
@@ -83,7 +84,6 @@ export default function Register() {
                             <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Password</label>
                             <input name="password" type="password" value={form.password} onChange={handleChange} className="w-full bg-[#181818] border border-[#252525] rounded-xl px-4 py-2.5 sm:py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-[#E8440A] transition-colors" placeholder="Min. 8 characters" required />
                         </div>
-
                         <label className="flex items-center space-x-3 cursor-pointer py-1 group">
                             <input name="isSeller" type="checkbox" checked={form.isSeller} onChange={handleChange} className="w-4 h-4 rounded border-[#333] bg-[#181818] accent-[#E8440A] cursor-pointer" />
                             <div>
@@ -92,13 +92,12 @@ export default function Register() {
                             </div>
                         </label>
 
-                        <a href="/api/auth/google" className='w-full cursor-pointer hover:bg-[#228dff] text-white text-sm font-semibold rounded-xl py-1.5 px-2 mt-1 transition-all hover:shadow-[0_4px_16px_rgba(232,68,10,0.3)] hover:-translate-y-0.5 active:translate-y-0'>
-                            Continue with Google
-                        </a>
 
                         <button type="submit" className="w-full bg-[#E8440A] cursor-pointer hover:bg-[#FF5722] text-white text-sm font-semibold rounded-xl py-3 mt-2 transition-all hover:shadow-[0_4px_16px_rgba(232,68,10,0.3)] hover:-translate-y-0.5 active:translate-y-0">
                             Sign Up
                         </button>
+
+                        <ContinueWithGoogle />
                     </form>
                 </div>
             </div>

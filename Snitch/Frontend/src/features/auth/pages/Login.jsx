@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { useAuth } from '../hook/useAuth';
+import ContinueWithGoogle from '../components/ContinueWithGoogle';
 
 export default function Login() {
 
@@ -80,6 +81,7 @@ export default function Login() {
                         <button type="submit" className="w-full cursor-pointer bg-[#E8440A] hover:bg-[#FF5722] text-white text-sm font-semibold rounded-xl py-3 mt-4 transition-all hover:shadow-[0_4px_16px_rgba(232,68,10,0.3)] hover:-translate-y-0.5 active:translate-y-0">
                             Login
                         </button>
+                        <ContinueWithGoogle />
                     </form>
                 </div>
             </div>

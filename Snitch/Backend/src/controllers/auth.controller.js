@@ -65,7 +65,7 @@ export const login = async (req, res) => {
 
     const user = await userModel.findOne({ email })
 
-    if(!user){
+    if (!user) {
         return res.status(400).json({
             message: "Invalid email or password"
         })
@@ -73,7 +73,7 @@ export const login = async (req, res) => {
 
     const isMatch = await user.comparePassword(password)
 
-    if(!isMatch){
+    if (!isMatch) {
         return res.status(400).json({
             message: "Invalid email or password"
         })
@@ -90,13 +90,25 @@ export const googleCallback = async (req, res) => {
     const frofilePic = photos[0].value
     const fullname = displayName
 
-    const user = await userModel.findOne({email})
+    let user = await userModel.findOne({ email })
 
-    if(!user){
-        
+    if (!user) {
+        user = await userModel.create({
+            email,
+            googleId: id,
+            fullname: displayName,
+
+        })
     }
-    console.log(req.user);
 
+    const token = jwt.sign({
+        id: user._id,
+
+    }, config.JWT_SECRET, {
+        expiresIn: "7d"
+    })
+
+    res.cookie("token", token)
     res.redirect("http://localhost:5173/")
-    
+
 }
