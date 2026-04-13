@@ -87,8 +87,7 @@ export const googleCallback = async (req, res) => {
     const { id, displayName, emails, photos } = req.user
 
     const email = emails[0].value
-    const frofilePic = photos[0].value
-    const fullname = displayName
+    const profilePic = photos[0].value
 
     let user = await userModel.findOne({ email })
 
@@ -97,7 +96,7 @@ export const googleCallback = async (req, res) => {
             email,
             googleId: id,
             fullname: displayName,
-
+            profilePic
         })
     }
 
@@ -110,5 +109,4 @@ export const googleCallback = async (req, res) => {
 
     res.cookie("token", token)
     res.redirect("http://localhost:5173/")
-
 }
