@@ -8,3 +8,22 @@
     rgba(0, 0, 0, 0)
   );
 }
+
+.brand-gradient {
+    background: linear-gradient(to right, #E8440A, #FF5722);
+}
+
+.brand-gradient-text {
+    background: linear-gradient(to right, #E8440A, #FF5722);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.btn-gradient {
+    background: linear-gradient(to bottom right, #E8440A, #FF5722);
+}
+
+.card-overlay-gradient {
+    background: linear-gradient(to top, #141414, rgba(20, 20, 20, 0.2), transparent);
+}
