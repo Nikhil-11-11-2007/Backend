@@ -36,7 +36,7 @@ export async function getSellerProducts(req, res) {
 
     const seller = req.user;
 
-    const products = await productModel.find({seller: seller._id})
+    const products = await productModel.find({ seller: seller._id })
 
     res.status(200).json({
         message: "Products fetched successfully",
@@ -44,3 +44,26 @@ export async function getSellerProducts(req, res) {
         products
     })
 }
+
+export async function deleteProduct(req, res) {
+
+    const { id } = req.params;
+
+    const seller = req.user;
+
+    const product = await productModel.findOneAndDelete({ _id: id, seller: seller._id })
+
+    if (!product) {
+        return res.status(404).json({
+            message: "Product not found",
+            success: false
+        })
+    }
+
+    res.status(200).json({
+        message: "Product deleted successfully",
+        success: true
+    })
+}
+
+// https://www.reddit.com/r/developersIndia/comments/1ep0znu/my_disappointing_experience_with_sheryians_coding/

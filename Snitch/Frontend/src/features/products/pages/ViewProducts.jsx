@@ -4,9 +4,23 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router';
 
 const ViewProducts = () => {
-    const { handleGetSellerProduct } = useProduct();
+    const { handleGetSellerProduct, handleDeleteProduct } = useProduct();
     const sellerProducts = useSelector((state) => state.product?.sellerProducts) || []
     const [isLoading, setIsLoading] = useState(true);
+    const [openMenuId, setOpenMenuId] = useState(null);
+
+    const toggleMenu = (id) => {
+        setOpenMenuId(openMenuId === id ? null : id);
+    };
+
+    const onDelete = async (id) => {
+        try {
+            await handleDeleteProduct(id);
+            setOpenMenuId(null);
+        } catch (error) {
+            console.error("Failed to delete product:", error);
+        }
+    };
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -74,7 +88,7 @@ const ViewProducts = () => {
                             >
                                 <div className="absolute inset-0 border-2 border-transparent group-hover:border-[#E8440A]/20 rounded-xl transition-colors duration-500 z-10 pointer-events-none"></div>
 
-                                <div className="relative aspect-[0.8] bg-[#201F1F] overflow-hidden flex overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:-none] [scrollbar-width:none]">
+                                <div className="relative aspect-[0.9] bg-[#201F1F] overflow-hidden flex overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:-none] [scrollbar-width:none]">
                                     {product.images && product.images.length > 0 ? (
                                         product.images.map((img, idx) => (
                                             <div
@@ -110,17 +124,35 @@ const ViewProducts = () => {
                                     <h3 className="text-base sm:text-lg font-semibold text-[#E5E2E1] truncate mb-2 group-hover:text-[#E8440A] transition-colors">
                                         {product.title || "Untitled Product"}
                                     </h3>
-                                    <p className="text-[#9A9A9A] text-xs sm:text-sm line-clamp-2 leading-relaxed h-8 sm:h-10">
+                                    <p className="text-[#9a9a9a] text-xs sm:text-sm line-clamp-2 leading-relaxed h-8 sm:h-10">
                                         {product.description || "No description provided."}
                                     </p>
 
-                                    <div className="mt-4 sm:mt-6 pt-4 sm:pt-5 border-t border-[#201F1F] flex items-center justify-between">
+                                    <div className="mt-4 sm:mt-6 pt-4 sm:pt-5 border-t border-[#201F1F] flex items-center justify-between relative">
                                         <span className="text-[#5C4039] text-[10px] uppercase font-mono tracking-widest">
                                             ID: {(product._id || product.id)?.slice(-6) || 'N/A'}
                                         </span>
-                                        <button className="text-[#5C4039] hover:text-[#E8440A] p-2 -mr-2 transition-colors">
+                                        <button
+                                            onClick={() => toggleMenu(product._id || product.id)}
+                                            className="more text-[#5C4039] hover:text-[#E8440A] p-2 -mr-2 transition-colors"
+                                        >
                                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" /></svg>
                                         </button>
+
+                                        {openMenuId === (product._id || product.id) && (
+                                            <div className="absolute bottom-full right-0 mb-2 w-32 bg-[#201F1F] border border-[#2A2A2A] rounded-md shadow-[0_10px_30px_rgba(0,0,0,0.8)] z-20 py-1 overflow-hidden">
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        onDelete(product._id || product.id);
+                                                    }}
+                                                    className="w-full text-left px-4 py-3 text-xs tracking-wider uppercase font-semibold text-[#E8440A] hover:bg-[#2A2A2A] transition-colors flex items-center gap-3"
+                                                >
+                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>

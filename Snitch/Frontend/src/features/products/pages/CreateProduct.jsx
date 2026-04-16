@@ -44,7 +44,7 @@ const CreateProduct = () => {
             data.append('priceCurrency', formData.priceCurrency);
             images.forEach(img => data.append('images', img));
             await handleCreateProduct(data);
-            navigate('/');
+            navigate('/seller/view-products');
         } catch (err) {
             console.error('Failed to create product', err);
         } finally {

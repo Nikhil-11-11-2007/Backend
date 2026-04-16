@@ -8,9 +8,12 @@ const productSlice = createSlice({
     reducers: {
         setSellerProducts: (state, action) => {
             state.sellerProducts = action.payload
+        },
+        deleteProductById: (state, action) => {
+            state.sellerProducts = state.sellerProducts.filter((product) => product._id !== action.payload)
         }
     }
 })
 
-export const { setSellerProducts } = productSlice.actions
+export const { setSellerProducts, deleteProductById } = productSlice.actions
 export default productSlice.reducer

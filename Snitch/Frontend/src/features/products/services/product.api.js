@@ -14,3 +14,8 @@ export async function getSellerProduct() {
     const response = await productApiInstance.get("/seller")
     return response.data
 }
+
+export async function deleteProduct(id) {
+    const response = await productApiInstance.delete(`/${id}`)
+    return response.data
+}
