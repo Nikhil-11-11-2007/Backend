@@ -70,19 +70,31 @@ const ViewProducts = () => {
                         {sellerProducts.map((product) => (
                             <div
                                 key={product._id || product.id}
-                                className="group relative bg-[#141414] rounded-xl overflow-hidden transition-all duration-500 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.6)]"
+                                className="group cursor-pointer relative bg-[#141414] rounded-xl overflow-hidden transition-all duration-500 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.6)]"
                             >
                                 <div className="absolute inset-0 border-2 border-transparent group-hover:border-[#E8440A]/20 rounded-xl transition-colors duration-500 z-10 pointer-events-none"></div>
 
-                                <div className="relative aspect-[0.8] bg-[#201F1F] overflow-hidden">
+                                <div className="relative aspect-[0.8] bg-[#201F1F] overflow-hidden flex overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:-none] [scrollbar-width:none]">
                                     {product.images && product.images.length > 0 ? (
-                                        <img
-                                            src={product.images[0]}
-                                            alt={product.title}
-                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                        />
+                                        product.images.map((img, idx) => (
+                                            <div
+                                                key={idx}
+                                                className="relative w-full h-full shrink-0 snap-center"
+                                            >
+                                                <img
+                                                    src={img?.url || img}
+                                                    alt={`${product.title} - ${idx + 1}`}
+                                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                                />
+
+                                                {/* ✅ PRICE PER IMAGE */}
+                                                <div className="absolute top-4 right-4 z-10 bg-[#0D0D0D]/90 backdrop-blur-sm border border-[#2A2A2A] px-3 py-1.5 rounded text-[10px] font-mono tracking-wider text-[#E5E2E1]">
+                                                    {product.price?.amount} {product.price?.currency}
+                                                </div>
+                                            </div>
+                                        ))
                                     ) : (
-                                        <div className="absolute inset-0 flex items-center justify-center bg-[#181818] text-[#3A3939]">
+                                        <div className="absolute inset-0 flex items-center justify-center bg-[#181818] text-[#3A3939] w-full shrink-0">
                                             <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                                         </div>
                                     )}
@@ -90,7 +102,7 @@ const ViewProducts = () => {
                                     <div className="absolute inset-0 card-overlay-gradient opacity-90 z-0 h-1/2 mt-auto"></div>
 
                                     <div className="absolute top-4 right-4 z-10 bg-[#0D0D0D]/90 backdrop-blur-sm border border-[#2A2A2A] px-3 py-1.5 rounded text-[10px] font-mono tracking-wider text-[#E5E2E1] group-hover:border-[#E8440A]/50 group-hover:text-[#E8440A] transition-colors">
-                                        {product.priceCurrency} {product.priceAmount}
+                                        {product.price?.amount} {product.price?.currency}
                                     </div>
                                 </div>
 

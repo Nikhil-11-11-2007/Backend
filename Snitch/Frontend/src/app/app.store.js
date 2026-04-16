@@ -4,7 +4,7 @@ import productReducer from "../features/products/state/product.slice"
 
 export const store = configureStore({
     reducer: {
-        authReducer,
-        productReducer
+        auth: authReducer,
+        product: productReducer
     }
 })
