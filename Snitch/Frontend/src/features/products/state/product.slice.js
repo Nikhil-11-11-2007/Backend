@@ -3,7 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const productSlice = createSlice({
     name: "product",
     initialState: {
-        sellerProducts: []
+        sellerProducts: [],
+        allProducts: []
     },
     reducers: {
         setSellerProducts: (state, action) => {
@@ -11,9 +12,12 @@ const productSlice = createSlice({
         },
         deleteProductById: (state, action) => {
             state.sellerProducts = state.sellerProducts.filter((product) => product._id !== action.payload)
+        },
+        setAllProducts: (state, action) => {
+            state.allProducts = action.payload
         }
     }
 })
 
-export const { setSellerProducts, deleteProductById } = productSlice.actions
+export const { setSellerProducts, deleteProductById, setAllProducts } = productSlice.actions
 export default productSlice.reducer

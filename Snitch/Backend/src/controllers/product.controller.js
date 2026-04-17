@@ -65,3 +65,33 @@ export async function deleteProduct(req, res) {
         success: true
     })
 }
+
+export async function getAllProducts(req, res) {
+
+    const products = await productModel.find()
+
+    res.status(200).json({
+        message: "Products fetched successfully",
+        success: true,
+        products
+    })
+}
+
+export async function getSingleProduct(req, res) {
+
+    const { id } = req.params;
+    const product = await productModel.findById(id)
+
+    if (!product) {
+        return res.status(404).json({
+            message: "Product not found",
+            success: false
+        })
+    }
+
+    res.status(200).json({
+        message: "Product fetched successfully",
+        success: true,
+        product
+    })
+}
