@@ -19,7 +19,7 @@ export default function Register() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await handleRegister({
+        const user = await handleRegister({
             email: form.email,
             contact: form.contact,
             password: form.password,
@@ -27,7 +27,11 @@ export default function Register() {
             isSeller: form.isSeller
         })
 
-        navigate("/")
+        if (user.role === "seller") {
+            navigate("/seller/view-products")
+        } else if (user.role === "buyer") {
+            navigate("/")
+        }
     }
 
     return (

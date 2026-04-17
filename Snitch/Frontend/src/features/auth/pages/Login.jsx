@@ -19,12 +19,16 @@ export default function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await handleLogin({
+        const user = await handleLogin({
             email: form.email,
             password: form.password
         })
 
-        navigate("/")
+        if (user.role === "seller") {
+            navigate("/seller/view-products")
+        } else if (user.role === "buyer") {
+            navigate("/")
+        }
     }
 
     return (

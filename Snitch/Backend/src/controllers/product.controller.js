@@ -65,5 +65,3 @@ export async function deleteProduct(req, res) {
         success: true
     })
 }
-
-// https://www.reddit.com/r/developersIndia/comments/1ep0znu/my_disappointing_experience_with_sheryians_coding/
