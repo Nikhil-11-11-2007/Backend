@@ -5,15 +5,12 @@ import CreateProduct from "../features/products/pages/CreateProduct";
 import ViewProducts from "../features/products/pages/ViewProducts";
 import Protected from "../features/auth/components/Protected";
 import Home from "../features/products/pages/Home";
+import ProductDetail from "../features/products/pages/ProductDetail";
 
 export const routes = createBrowserRouter([
     {
         path: "/",
         element: <Home />
-    },
-    {
-        path: "*",
-        element: <h1>404 Not Found</h1>
     },
     {
         path: "/register",
@@ -22,6 +19,10 @@ export const routes = createBrowserRouter([
     {
         path: "/login",
         element: <Login />
+    },
+    {
+        path: "/product/:productId",
+        element: <ProductDetail />
     },
     {
         path: "/seller",
@@ -39,5 +40,9 @@ export const routes = createBrowserRouter([
                 </Protected>
             }
         ]
-    }
+    },
+    {
+        path: "*",
+        element: <h1>404 Not Found</h1>
+    },
 ])

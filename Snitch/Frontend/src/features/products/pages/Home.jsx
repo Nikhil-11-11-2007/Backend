@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useProduct } from '../hooks/useProduct'
+import { useNavigate } from 'react-router'
 
 const Home = () => {
     const products = useSelector(state => state.product.allProducts) || []
     const { handleGetAllProducts } = useProduct()
     const [isLoading, setIsLoading] = useState(true);
+    const navigate = useNavigate()
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -55,6 +57,7 @@ const Home = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
                         {products.map((product) => (
                             <div
+                                onClick={() => navigate(`/product/${product._id}`)}
                                 key={product._id || product.id}
                                 className="group cursor-pointer relative bg-[#141414] rounded-xl overflow-hidden transition-all duration-500 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.6)]"
                             >

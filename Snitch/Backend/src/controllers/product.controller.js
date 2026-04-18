@@ -77,7 +77,7 @@ export async function getAllProducts(req, res) {
     })
 }
 
-export async function getSingleProduct(req, res) {
+export async function getProductDetails(req, res) {
 
     const { id } = req.params;
     const product = await productModel.findById(id)
