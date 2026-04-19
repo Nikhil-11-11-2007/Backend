@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useProduct } from '../hooks/useProduct';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 
 const ViewProducts = () => {
     const { handleGetSellerProduct, handleDeleteProduct } = useProduct();
     const sellerProducts = useSelector((state) => state.product?.sellerProducts) || []
     const [isLoading, setIsLoading] = useState(true);
     const [openMenuId, setOpenMenuId] = useState(null);
+    const navigate = useNavigate();
 
     const toggleMenu = (id) => {
         setOpenMenuId(openMenuId === id ? null : id);
@@ -83,12 +84,13 @@ const ViewProducts = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
                         {sellerProducts.map((product) => (
                             <div
+                                onClick={() => navigate(`/seller/product/${product._id}`)}
                                 key={product._id || product.id}
                                 className="group cursor-pointer relative bg-[#141414] rounded-xl overflow-hidden transition-all duration-500 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.6)]"
                             >
                                 <div className="absolute inset-0 border-2 border-transparent group-hover:border-[#E8440A]/20 rounded-xl transition-colors duration-500 z-10 pointer-events-none"></div>
 
-                                <div className="relative aspect-[0.9] bg-[#201F1F] overflow-hidden flex overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:-none] [scrollbar-width:none]">
+                                <div className="relative aspect-[0.8] bg-[#201F1F] overflow-hidden flex overflow-x-auto snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:-none] [scrollbar-width:none]">
                                     {product.images && product.images.length > 0 ? (
                                         product.images.map((img, idx) => (
                                             <div
