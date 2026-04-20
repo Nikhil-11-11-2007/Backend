@@ -30,17 +30,20 @@ export async function getProductById(productId) {
     return response.data
 }
 
-export async function addVariant(productId, payload) {
-    const response = await productApiInstance.post(`/${productId}/variant`, payload)
-    return response.data
-}
+export async function addProductVariant(productId, newProductVariant) {
 
-export async function deleteVariant(productId, variantId) {
-    const response = await productApiInstance.delete(`/${productId}/variant/${variantId}`)
-    return response.data
-}
+    console.log(newProductVariant)
+    const formData = new FormData()
 
-export async function updateVariantStock(productId, variantId, stock) {
-    const response = await productApiInstance.patch(`/${productId}/variant/${variantId}/stock`, { stock })
+    newProductVariant.images.forEach((image) => {
+        formData.append(`images`, image.file)
+    })
+
+    formData.append("stock", newProductVariant.stock)
+    formData.append("priceAmount", newProductVariant.price)
+    formData.append("attributes", JSON.stringify(newProductVariant.attributes))
+
+    const response = await productApiInstance.post(`/${productId}/variants`, formData)
     return response.data
+
 }
