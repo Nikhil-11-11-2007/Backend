@@ -8,6 +8,8 @@ const ProductDetail = () => {
     const [product, setProduct] = useState(null)
     const [activeImage, setActiveImage] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
+    const [selectedAttributes, setSelectedAttributes] = useState({})
+    const [selectedVariant, setSelectedVariant] = useState(null)
 
     const { handleGetProductById } = useProduct()
 
@@ -27,14 +29,51 @@ const ProductDetail = () => {
         fetchProductDetail()
     }, [productId])
 
+    // Extract unique attribute options
+    const attributeOptions = {}
+    if (product?.variants) {
+        product.variants.forEach(variant => {
+            Object.entries(variant.attributes).forEach(([key, value]) => {
+                if (!attributeOptions[key]) attributeOptions[key] = new Set()
+                attributeOptions[key].add(value)
+            })
+        })
+    }
+
+    // Match selectedVariant when attributes change
+    useEffect(() => {
+        if (!product?.variants) return
+
+        const match = product.variants.find(variant => {
+            // Check if all selected attributes match this variant
+            const selectedKeys = Object.keys(selectedAttributes)
+            if (selectedKeys.length === 0) return false
+            
+            return selectedKeys.every(key => variant.attributes[key] === selectedAttributes[key])
+        })
+        setSelectedVariant(match || null)
+        setActiveImage(0) // Reset image index on variant change
+    }, [selectedAttributes, product])
+
+    // Initialize default attributes from first variant
+    useEffect(() => {
+        if (product?.variants?.length > 0 && Object.keys(selectedAttributes).length === 0) {
+            setSelectedAttributes(product.variants[0].attributes)
+        }
+    }, [product])
+
+    const displayImages = selectedVariant?.images?.length > 0 ? selectedVariant.images : product?.images || []
+    const displayPrice = selectedVariant?.price || product?.price
+    const displayStock = selectedVariant ? selectedVariant.stock : (product?.variants?.length > 0 ? 0 : null)
+
     const handlePrevImage = () => {
-        if (!product) return
-        setActiveImage((prev) => (prev === 0 ? product.images.length - 1 : prev - 1))
+        if (displayImages.length === 0) return
+        setActiveImage((prev) => (prev === 0 ? displayImages.length - 1 : prev - 1))
     }
 
     const handleNextImage = () => {
-        if (!product) return
-        setActiveImage((prev) => (prev === product.images.length - 1 ? 0 : prev + 1))
+        if (displayImages.length === 0) return
+        setActiveImage((prev) => (prev === displayImages.length - 1 ? 0 : prev + 1))
     }
 
     /* ── Loading ── */
@@ -59,6 +98,9 @@ const ProductDetail = () => {
             </div>
         )
     }
+    
+    
+    console.log(product);
 
     return (
         <div className="min-h-screen bg-[#f8f9fa] font-['Inter',sans-serif]">
@@ -85,7 +127,7 @@ const ProductDetail = () => {
                         <div className="relative w-full sm:w-full lg:w-[77%] bg-white rounded-xl overflow-hidden shadow-[0_12px_40px_rgba(25,28,29,0.06)] group">
                             <img
                                 key={activeImage}
-                                src={product.images[activeImage]?.url}
+                                src={displayImages[activeImage]?.url}
                                 alt={`${product.title} — view ${activeImage + 1}`}
                                 className="w-full h-full object-cover transition-all duration-500"
                             />
@@ -116,13 +158,13 @@ const ProductDetail = () => {
 
                             {/* Image counter pill */}
                             <div className="absolute bottom-4 right-4 bg-white/80 backdrop-blur-sm text-[#191c1d] text-[10px] font-semibold tracking-widest uppercase px-3 py-1.5 rounded-full">
-                                {activeImage + 1} / {product.images.length}
+                                {activeImage + 1} / {displayImages.length}
                             </div>
                         </div>
 
                         {/* Thumbnail strip */}
                         <div className="flex gap-3 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                            {product.images.map((img, idx) => (
+                            {displayImages.map((img, idx) => (
                                 <button
                                     key={img._id}
                                     id={`thumb-${idx}`}
@@ -164,10 +206,10 @@ const ProductDetail = () => {
                         {/* Price */}
                         <div className="flex items-baseline gap-3">
                             <span className="text-4xl font-bold text-[#E8440A] tracking-tight">
-                                ₹{product.price?.amount}
+                                ₹{displayPrice?.amount}
                             </span>
                             <span className="text-sm text-[#907067] uppercase tracking-wider font-medium">
-                                {product.price?.currency}
+                                {displayPrice?.currency}
                             </span>
                         </div>
 
@@ -180,6 +222,54 @@ const ProductDetail = () => {
                                 {product.description}
                             </p>
                         </div>
+
+                        {/* Variant Selection */}
+                        {Object.keys(attributeOptions).length > 0 && (
+                            <div className="space-y-6 py-2">
+                                {Object.entries(attributeOptions).map(([attrKey, values]) => (
+                                    <div key={attrKey} className="space-y-3">
+                                        <div className="flex justify-between items-center">
+                                            <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#907067]">
+                                                Select {attrKey}
+                                            </p>
+                                            {selectedAttributes[attrKey] && (
+                                                <span className="text-[#191c1d] text-[11px] font-medium capitalize">
+                                                    {selectedAttributes[attrKey]}
+                                                </span>
+                                            )}
+                                        </div>
+                                        <div className="flex flex-wrap gap-2">
+                                            {Array.from(values).map((value) => {
+                                                const isSelected = selectedAttributes[attrKey] === value
+                                                return (
+                                                    <button
+                                                        key={value}
+                                                        onClick={() => setSelectedAttributes(prev => ({ ...prev, [attrKey]: value }))}
+                                                        className={`px-5 py-2.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-300 border-2 ${
+                                                            isSelected
+                                                                ? 'bg-[#191c1d] border-[#191c1d] text-white shadow-md scale-105'
+                                                                : 'bg-white border-[#edeeef] text-[#5c4039] hover:border-[#191c1d]'
+                                                        }`}
+                                                    >
+                                                        {value}
+                                                    </button>
+                                                )
+                                            })}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Stock Status */}
+                        {displayStock !== null && (
+                            <div className="flex items-center gap-2">
+                                <div className={`w-2 h-2 rounded-full ${displayStock > 0 ? 'bg-green-500' : 'bg-red-500'}`} />
+                                <p className={`text-xs font-medium ${displayStock > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                    {displayStock > 0 ? `${displayStock} units available` : 'Out of stock'}
+                                </p>
+                            </div>
+                        )}
 
                         {/* CTA Buttons */}
                         <div className="flex gap-4 pt-2">
