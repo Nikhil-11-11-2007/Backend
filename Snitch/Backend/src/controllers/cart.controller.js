@@ -10,7 +10,7 @@ export const addToCart = async (req, res) => {
     const { quantity = 1 } = req.body
 
     const product = await productModel.findOne({
-        id: productId,
+        _id: productId,
         "variants._id": variantId
     })
 
@@ -24,13 +24,13 @@ export const addToCart = async (req, res) => {
     // Check if the requested quantity is available in stock
     const stock = await stockOfVariant(productId, variantId)
 
-    const cart = await cartModel.findOne({user: req.user._id}) || new cartModel.create({user: req.user._id})
+    const cart = await cartModel.findOne({ user: req.user._id }) || (await cartModel.create({ user: req.user._id }))
 
     const isProductInAlreadyInCart = cart.items.some(item => item.product.toString() === productId && item.variant.toString() === variantId)
 
     if (isProductInAlreadyInCart) {
         const quantityInCart = cart.items.find(item => item.product.toString() === productId && item.variant.toString() === variantId).quantity
-        if(quantityInCart + req.body.quantity > stock) {
+        if (quantityInCart + req.body.quantity > stock) {
             return res.status(400).json({
                 message: `Only ${stock} items left in stock and you already have ${quantityInCart} in your cart`,
                 success: false
@@ -68,5 +68,23 @@ export const addToCart = async (req, res) => {
     return res.status(200).json({
         message: "Product added to cart successfully",
         success: true
+    })
+}
+
+// Get cart details
+export const getCart = async (req, res) => {
+
+    const user = req.user
+
+    let cart = await cartModel.findOne({ user: user._id }).populate("items.product")
+
+    if (!cart) {
+        cart = await cartModel.create({ user: user._id })
+    }
+
+    return res.status(200).json({
+        message: "Cart retrieved successfully",
+        success: true,
+        cart
     })
 }

@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { useProduct } from '../hooks/useProduct'
+import { useCart } from '../../cart/hook/useCart'
 
 const ProductDetail = () => {
     const { productId } = useParams()
-
     const [product, setProduct] = useState(null)
     const [activeImage, setActiveImage] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
     const [selectedAttributes, setSelectedAttributes] = useState({})
     const [selectedVariant, setSelectedVariant] = useState(null)
-
     const { handleGetProductById } = useProduct()
+    const { handleAddToCart } = useCart()
 
     async function fetchProductDetail() {
         setIsLoading(true)
@@ -310,7 +310,8 @@ const ProductDetail = () => {
                             {/* Add to Cart */}
                             <button
                                 id="add-to-cart-btn"
-                                className="flex-1 h-14 flex items-center justify-center gap-2.5 rounded-xl border-2 border-[#191c1d] text-[#191c1d] text-sm font-bold uppercase tracking-widest hover:bg-[#191c1d] hover:text-white transition-all duration-300 group"
+                                className="flex-1 h-14 cursor-pointer flex items-center justify-center gap-2.5 rounded-xl border-2 border-[#191c1d] text-[#191c1d] text-sm font-bold uppercase tracking-widest hover:bg-[#191c1d] hover:text-white transition-all duration-300 group"
+                                onClick={() => handleAddToCart({ productId: product._id, variantId: selectedVariant._id })}
                             >
                                 <svg className="w-5 h-5 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
