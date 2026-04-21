@@ -135,7 +135,10 @@ const ViewProducts = () => {
                                             ID: {(product._id || product.id)?.slice(-6) || 'N/A'}
                                         </span>
                                         <button
-                                            onClick={() => toggleMenu(product._id || product.id)}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                toggleMenu(product._id || product.id)
+                                            }}
                                             className="more text-[#5C4039] hover:text-[#E8440A] p-2 -mr-2 transition-colors"
                                         >
                                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" /></svg>

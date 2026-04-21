@@ -45,15 +45,51 @@ const ProductDetail = () => {
         if (!product?.variants) return
 
         const match = product.variants.find(variant => {
-            // Check if all selected attributes match this variant
-            const selectedKeys = Object.keys(selectedAttributes)
-            if (selectedKeys.length === 0) return false
-            
-            return selectedKeys.every(key => variant.attributes[key] === selectedAttributes[key])
+            return Object.entries(selectedAttributes).every(([key, value]) => {
+                return variant.attributes[key] === value
+            })
         })
-        setSelectedVariant(match || null)
-        setActiveImage(0) // Reset image index on variant change
+
+        let finalVariant = match
+
+        if (!match) {
+            const lastKey = Object.keys(selectedAttributes).slice(-1)[0]
+            const lastValue = selectedAttributes[lastKey]
+            finalVariant = product.variants.find(variant => {
+                return variant.attributes[lastKey] === lastValue && variant.stock > 0
+            })
+        }
+
+        setSelectedVariant(finalVariant || null)
+
+        if (finalVariant) {
+            setSelectedAttributes(finalVariant.attributes)
+        }
+
+        setActiveImage(0)
     }, [selectedAttributes, product])
+
+    const handleAttributeSelect = (key, value) => {
+        const updated = { ...selectedAttributes, [key]: value }
+
+        // Exact match
+        let match = product.variants.find(variant =>
+            Object.entries(updated).every(([k, v]) => variant.attributes[k] === v)
+        )
+
+        // Fallback
+        if (!match) {
+            match = product.variants.find(variant =>
+                variant.attributes[key] === value && variant.stock > 0
+            )
+        }
+
+        if (match) {
+            setSelectedAttributes(match.attributes)
+            setSelectedVariant(match)
+            setActiveImage(0)
+        }
+    }
 
     // Initialize default attributes from first variant
     useEffect(() => {
@@ -98,8 +134,8 @@ const ProductDetail = () => {
             </div>
         )
     }
-    
-    
+
+
     console.log(product);
 
     return (
@@ -169,11 +205,10 @@ const ProductDetail = () => {
                                     key={img._id}
                                     id={`thumb-${idx}`}
                                     onClick={() => setActiveImage(idx)}
-                                    className={`shrink-0 w-16 h-20 sm:w-20 sm:h-24 rounded-lg overflow-hidden transition-all duration-300 ${
-                                        activeImage === idx
-                                            ? 'ring-2 ring-[#E8440A] ring-offset-2 scale-105'
-                                            : 'opacity-60 hover:opacity-100 hover:scale-105'
-                                    }`}
+                                    className={`shrink-0 w-16 h-20 sm:w-20 sm:h-24 rounded-lg overflow-hidden transition-all duration-300 ${activeImage === idx
+                                        ? 'ring-2 ring-[#E8440A] ring-offset-2 scale-105'
+                                        : 'opacity-60 hover:opacity-100 hover:scale-105'
+                                        }`}
                                 >
                                     <img
                                         src={img.url}
@@ -244,12 +279,11 @@ const ProductDetail = () => {
                                                 return (
                                                     <button
                                                         key={value}
-                                                        onClick={() => setSelectedAttributes(prev => ({ ...prev, [attrKey]: value }))}
-                                                        className={`px-5 py-2.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-300 border-2 ${
-                                                            isSelected
-                                                                ? 'bg-[#191c1d] border-[#191c1d] text-white shadow-md scale-105'
-                                                                : 'bg-white border-[#edeeef] text-[#5c4039] hover:border-[#191c1d]'
-                                                        }`}
+                                                        onClick={() => handleAttributeSelect(attrKey, value)}
+                                                        className={`px-5 py-2.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-300 border-2 ${isSelected
+                                                            ? 'bg-[#191c1d] border-[#191c1d] text-white shadow-md scale-105'
+                                                            : 'bg-white border-[#edeeef] text-[#5c4039] hover:border-[#191c1d]'
+                                                            }`}
                                                     >
                                                         {value}
                                                     </button>
