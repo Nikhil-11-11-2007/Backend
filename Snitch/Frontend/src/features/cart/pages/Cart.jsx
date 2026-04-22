@@ -1,14 +1,25 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useCart } from '../hook/useCart'
 
 const Cart = () => {
     const cartItems = useSelector(state => state.cart.items)
-    const { handleGetCart } = useCart()
+    const { handleGetCart, handleIncrementCartItem } = useCart()
+    const [quantities, setQuantities] = useState({})
 
     useEffect(() => {
         handleGetCart()
     }, [])
+
+    useEffect(() => {
+        if (cartItems?.length) {
+            const initial = {}
+            cartItems.forEach(item => {
+                initial[item._id] = item.quantity ?? 1
+            })
+            setQuantities(initial)
+        }
+    }, [cartItems])
 
     const freeShippingThreshold = 15000
     const subtotal = cartItems?.reduce((acc, item) => {
@@ -57,7 +68,6 @@ const Cart = () => {
                         </p>
                     </div>
                 </header>
-
                 <div className="lg:grid lg:grid-cols-12 lg:gap-x-12">
                     {/* Items List */}
                     <div className="lg:col-span-8">
@@ -71,6 +81,7 @@ const Cart = () => {
                         ) : (
                             <div className="space-y-6">
                                 {cartItems.map((item) => {
+                                    const qty = quantities[item._id] ?? item.quantity ?? 1
                                     const variant = getVariantDetails(item) || {}
 
                                     const displayPrice = item.price || variant?.price || item.product.price
@@ -116,9 +127,24 @@ const Cart = () => {
                                                     <div className="space-y-1 col-span-2 sm:col-span-1">
                                                         <span className="block text-[10px] font-bold uppercase tracking-widest text-slate-400">Quantity</span>
                                                         <div className="inline-flex items-center bg-slate-50 rounded-lg p-1 border border-slate-100">
-                                                            <button className="w-8 h-8 flex items-center justify-center hover:bg-white hover:shadow-sm rounded-md transition-all font-bold">−</button>
-                                                            <span className="w-10 text-center text-sm font-black">{item.quantity}</span>
-                                                            <button className="w-8 h-8 flex items-center justify-center hover:bg-white hover:shadow-sm rounded-md transition-all font-bold">+</button>
+                                                            <button
+                                                                className="w-8 h-8 flex items-center justify-center hover:bg-white hover:shadow-sm rounded-md transition-all font-bold"
+                                                            >-</button>
+                                                            <span className="w-10 text-center text-sm font-black">{qty}</span>
+                                                            <button
+                                                                onClick={() => {
+                                                                    handleIncrementCartItem({
+                                                                        productId: item.product._id,
+                                                                        variantId: item.variant
+                                                                    })
+
+                                                                    setQuantities(prev => ({
+                                                                        ...prev,
+                                                                        [item._id]: (prev[item._id] ?? item.quantity ?? 1) + 1
+                                                                    }))
+                                                                }}
+                                                                className="w-8 h-8 flex items-center justify-center hover:bg-white hover:shadow-sm rounded-md transition-all font-bold"
+                                                            >+</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -144,10 +170,9 @@ const Cart = () => {
                             </div>
                         )}
                     </div>
-
                     {/* Order Summary */}
                     <div className="mt-12 lg:mt-0 lg:col-span-4">
-                        <div className="bg-slate-900 text-white p-8 lg:p-10 rounded-3xl sticky top-8 shadow-2xl shadow-slate-900/20">
+                        <div className="bg-slate-900 text-white p-8 lg:p-10 rounded-3xl sticky top-25 shadow-2xl shadow-slate-900/20">
                             <h2 className="text-2xl font-black tracking-tight uppercase mb-8 italic">Order Details</h2>
 
                             <div className="space-y-6">
@@ -181,7 +206,7 @@ const Cart = () => {
                             </div>
 
                             <button className="group relative w-full mt-10 overflow-hidden rounded-2xl bg-white p-5 transition-all active:scale-95">
-                                <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-red-500 opacity-0 group-hover:opacity-10 transition-opacity"></div>
+                                <div className="absolute inset-0 bg-[#aa3905] group-hover:opacity-10 transition-opacity"></div>
                                 <span className="relative text-slate-900 text-sm font-black uppercase tracking-[0.2em]">
                                     Secure Checkout
                                 </span>
@@ -201,7 +226,7 @@ const Cart = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 
