@@ -146,15 +146,6 @@ const SellerProductDetails = () => {
 
   return (
     <div className="min-h-screen bg-[#f8f9fa] text-[#1a1a1a] font-sans selection:bg-[#E8440A]/10">
-      {/* Breadcrumb Header - Responsive aware */}
-      <nav className="px-5 md:px-12 py-5 flex items-center gap-2 text-[10px] md:text-[11px] font-medium tracking-[0.1em] text-[#8e8e8e] uppercase border-b border-[#f1f1f1] bg-white/50 backdrop-blur-sm sticky top-0 z-20 overflow-x-auto no-scrollbar whitespace-nowrap">
-        <Link to="/" className="hover:text-[#E8440A] transition-colors flex items-center gap-1.5 shrink-0"><HomeIcon /> HOME</Link>
-        <span className="opacity-30 shrink-0"><ChevronRight /></span>
-        <Link to="/products" className="hover:text-[#E8440A] transition-colors shrink-0">MY PRODUCTS</Link>
-        <span className="opacity-30 shrink-0"><ChevronRight /></span>
-        <span className="text-[#1a1a1a] truncate">{product.title}</span>
-      </nav>
-
       <main className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 py-6 md:py-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
 

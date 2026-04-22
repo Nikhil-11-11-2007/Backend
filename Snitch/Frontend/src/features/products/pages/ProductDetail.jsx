@@ -141,16 +141,7 @@ const ProductDetail = () => {
     return (
         <div className="min-h-screen bg-[#f8f9fa] font-['Inter',sans-serif]">
 
-            {/* ── Sticky breadcrumb nav ── */}
-            <div className="bg-white/80 backdrop-blur-md border-b border-[#e5beb4]/30 sticky top-0 z-30">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center gap-2 text-xs text-[#907067] uppercase tracking-widest">
-                    <span className="hover:text-[#E8440A] cursor-pointer transition-colors">Home</span>
-                    <span>/</span>
-                    <span className="hover:text-[#E8440A] cursor-pointer transition-colors">Products</span>
-                    <span>/</span>
-                    <span className="text-[#191c1d] font-semibold">{product.title}</span>
-                </div>
-            </div>
+
 
             {/* ── Main content ── */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
