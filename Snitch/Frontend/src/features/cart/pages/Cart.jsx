@@ -6,9 +6,20 @@ const Cart = () => {
     const cartItems = useSelector(state => state.cart.items)
     const { handleGetCart, handleIncrementCartItem } = useCart()
     const [quantities, setQuantities] = useState({})
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
-        handleGetCart()
+        const fetchCart = async () => {
+            setLoading(true)
+            try {
+                await handleGetCart()
+            } catch (error) {
+                console.error("Failed to fetch cart:", error)
+            } finally {
+                setLoading(false)
+            }
+        }
+        fetchCart()
     }, [])
 
     useEffect(() => {
@@ -27,7 +38,7 @@ const Cart = () => {
             v => v._id.toString() === item.variant
         )
 
-        const displayPrice = item.price || variant?.price || item.product.price
+        const displayPrice = variant?.price || item.price
 
         return acc + ((displayPrice?.amount || 0) * item.quantity)
     }, 0) || 0
@@ -71,7 +82,12 @@ const Cart = () => {
                 <div className="lg:grid lg:grid-cols-12 lg:gap-x-12">
                     {/* Items List */}
                     <div className="lg:col-span-8">
-                        {cartItems?.length === 0 ? (
+                        {loading ? (
+                            <div className="py-32 text-center bg-white border border-slate-200 rounded-2xl shadow-sm">
+                                <div className="inline-block w-8 h-8 border-4 border-slate-200 border-t-slate-900 rounded-full animate-spin mb-4"></div>
+                                <p className="text-xl font-medium text-slate-500 uppercase tracking-widest italic">Curating your selection...</p>
+                            </div>
+                        ) : cartItems?.length === 0 ? (
                             <div className="py-32 text-center bg-white border border-dashed border-slate-300 rounded-2xl">
                                 <p className="text-xl font-medium text-slate-400">Your curation is currently empty.</p>
                                 <button className="mt-6 px-8 py-3 bg-slate-900 text-white font-bold rounded-full hover:bg-slate-800 transition-all">
@@ -83,15 +99,18 @@ const Cart = () => {
                                 {cartItems.map((item) => {
                                     const qty = quantities[item._id] ?? item.quantity ?? 1
                                     const variant = getVariantDetails(item) || {}
+                                    const displayPrice = variant?.price || item.price
+                                    const basePrice = item.product.price?.amount
+                                    const currentPrice = variant?.price?.amount || item.price?.amount
+                                    console.log(variant,displayPrice);
 
-                                    const displayPrice = item.price || variant?.price || item.product.price
                                     return (
                                         <div key={item._id} className="group relative flex flex-col sm:flex-row bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-500">
-                                            <div className="sm:w-56 h-72 sm:h-auto shrink-0 bg-slate-100 overflow-hidden">
+                                            <div className="sm:w-1/3 h-75 sm:h-auto shrink-0 bg-slate-100 overflow-hidden">
                                                 <img
                                                     src={getDisplayImage(item)}
                                                     alt={item.product.title}
-                                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                                                    className="w-full h-full object-center object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                                                 />
                                             </div>
 
@@ -119,6 +138,23 @@ const Cart = () => {
                                                             }}></span>
                                                             <span className="text-sm font-bold">{variant?.attributes?.color}</span>
                                                         </div>
+                                                        {
+                                                            currentPrice < basePrice && (
+                                                                <div className="flex items-center gap-2 mt-1">
+                                                                    <span className="text-sm font-bold text-green-600">
+                                                                        {formatCurrency(currentPrice)}
+                                                                    </span>
+
+                                                                    <span className="text-xs text-slate-400 line-through">
+                                                                        {formatCurrency(basePrice)}
+                                                                    </span>
+
+                                                                    <span className="text-xs font-bold text-green-600">
+                                                                        ({Math.round(((basePrice - currentPrice) / basePrice) * 100)}% OFF)
+                                                                    </span>
+                                                                </div>
+                                                            )
+                                                        }
                                                     </div>
                                                     <div className="space-y-1">
                                                         <span className="block text-[10px] font-bold uppercase tracking-widest text-slate-400">Size</span>
@@ -145,6 +181,12 @@ const Cart = () => {
                                                                 }}
                                                                 className="w-8 h-8 flex items-center justify-center hover:bg-white hover:shadow-sm rounded-md transition-all font-bold"
                                                             >+</button>
+                                                        </div>
+                                                        <div className="mt-2 flex items-center gap-1.5">
+                                                            <div className={`w-1.5 h-1.5 rounded-full ${variant?.stock > 0 ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                                                            <span className={`text-[10px] font-bold uppercase tracking-wider ${variant?.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                                                {variant?.stock > 0 ? `${variant.stock} In Stock` : 'Out of Stock'}
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </div>
