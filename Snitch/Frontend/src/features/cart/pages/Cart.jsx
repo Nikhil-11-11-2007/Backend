@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { useCart } from '../hook/useCart'
 
 const Cart = () => {
-    const cartItems = useSelector(state => state.cart.items)
+    const cartItems = useSelector(state => state.cart)
     const { handleGetCart, handleIncrementCartItem } = useCart()
     const [quantities, setQuantities] = useState({})
     const [loading, setLoading] = useState(false)
@@ -32,37 +32,22 @@ const Cart = () => {
         }
     }, [cartItems])
 
-    const freeShippingThreshold = 15000
-    const subtotal = cartItems?.reduce((acc, item) => {
-        const variant = item.product.variants.find(
-            v => v._id.toString() === item.variant
-        )
+    console.log(cartItems);
 
-        const displayPrice = variant?.price || item.price
-
-        return acc + ((displayPrice?.amount || 0) * item.quantity)
-    }, 0) || 0
-    const shippingFree = subtotal >= freeShippingThreshold
-    const totalPieces = cartItems?.length ?? 0
+    // const freeShippingThreshold = 15000
+    const totalPieces = cartItems?.items?.length ?? 0
 
     // Helper functions as requested
-    const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('en-IN', {
-            style: 'currency',
-            currency: 'INR',
-            maximumFractionDigits: 0
-        }).format(amount)
-    }
+    const formatCurrency = (amount, currency = 'INR') =>
+        `${currency} ${Number(amount).toLocaleString('en-IN')}`
 
     const getVariantDetails = (item) => {
-        return item.product.variants.find(
-            v => v._id.toString() === item.variant
-        )
+        return item.product.variants
     }
 
     const getDisplayImage = (item) => {
         const variant = getVariantDetails(item)
-        return variant?.images[0]?.url || item.product.images[0]?.url
+        return variant?.images?.[0]?.url || item.product.images?.[0]?.url
     }
 
     return (
@@ -96,7 +81,7 @@ const Cart = () => {
                             </div>
                         ) : (
                             <div className="space-y-6">
-                                {cartItems.map((item) => {
+                                {cartItems.items.map((item) => {
                                     const qty = quantities[item._id] ?? item.quantity ?? 1
                                     const variant = getVariantDetails(item) || {}
                                     const displayPrice = variant?.price ?? item.price
@@ -204,7 +189,7 @@ const Cart = () => {
                                                     </div>
                                                     <div className="text-right">
                                                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Item Total</span>
-                                                        <span className="text-lg font-black">{formatCurrency((displayPrice?.amount ?? 0) * item.quantity)}</span>
+                                                        <span className="text-lg font-black">{formatCurrency((currentPrice ?? 0) * qty)}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -222,29 +207,14 @@ const Cart = () => {
                             <div className="space-y-6">
                                 <div className="flex justify-between items-center">
                                     <span className="text-slate-400 uppercase tracking-widest text-[11px] font-bold">Subtotal</span>
-                                    <span className="font-black text-lg">{formatCurrency(subtotal)}</span>
+                                    <span className="font-black text-lg">{formatCurrency(cartItems.totalPrice)}</span>
                                 </div>
-                                <div className="flex justify-between items-center">
-                                    <span className="text-slate-400 uppercase tracking-widest text-[11px] font-bold">Shipping</span>
-                                    <div className="text-right">
-                                        <span className={`font-black ${shippingFree ? 'text-green-400' : 'text-white'}`}>
-                                            {shippingFree ? 'COMPLIMENTARY' : formatCurrency(99)}
-                                        </span>
-                                        {!shippingFree && (
-                                            <p className="text-[9px] text-slate-500 mt-1 uppercase font-bold">
-                                                Add {formatCurrency(freeShippingThreshold - subtotal)} for free shipping
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-
                                 <div className="pt-8 border-t border-slate-800">
                                     <div className="flex justify-between items-end">
                                         <div>
                                             <span className="text-3xl font-black uppercase tracking-tighter italic block">Total</span>
-                                            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Tax Included</span>
                                         </div>
-                                        <span className="text-4xl font-black tracking-tighter">{formatCurrency(subtotal + (shippingFree ? 0 : 99))}</span>
+                                        <span className="text-4xl font-black tracking-tighter">{formatCurrency(cartItems.totalPrice)}</span>
                                     </div>
                                 </div>
                             </div>
