@@ -99,10 +99,12 @@ const Cart = () => {
                                 {cartItems.map((item) => {
                                     const qty = quantities[item._id] ?? item.quantity ?? 1
                                     const variant = getVariantDetails(item) || {}
-                                    const displayPrice = variant?.price || item.price
-                                    const basePrice = item.product.price?.amount
-                                    const currentPrice = variant?.price?.amount || item.price?.amount
-                                    console.log(variant,displayPrice);
+                                    const displayPrice = variant?.price ?? item.price
+                                    const variantPrice = variant?.price?.amount
+                                    const productPrice = item.product.price?.amount
+                                    const cartPrice = item.price?.amount
+                                    const currentPrice = variantPrice ?? cartPrice
+                                    const basePrice = productPrice
 
                                     return (
                                         <div key={item._id} className="group relative flex flex-col sm:flex-row bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-500">
@@ -202,7 +204,7 @@ const Cart = () => {
                                                     </div>
                                                     <div className="text-right">
                                                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Item Total</span>
-                                                        <span className="text-lg font-black">{formatCurrency((displayPrice?.amount || 0) * item.quantity)}</span>
+                                                        <span className="text-lg font-black">{formatCurrency((displayPrice?.amount ?? 0) * item.quantity)}</span>
                                                     </div>
                                                 </div>
                                             </div>
