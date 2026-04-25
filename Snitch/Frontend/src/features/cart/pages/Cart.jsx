@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useCart } from '../hook/useCart'
+import { useRazorpay } from "react-razorpay";
 
 const Cart = () => {
     const cartItems = useSelector(state => state.cart)
-    const { handleGetCart, handleIncrementCartItem } = useCart()
+    const { handleGetCart, handleIncrementCartItem, handleCreateCartOrder } = useCart()
     const [quantities, setQuantities] = useState({})
     const [loading, setLoading] = useState(false)
+    const { error, isLoading, Razorpay } = useRazorpay();
+    const user = useSelector(state => state.user)
 
     useEffect(() => {
         const fetchCart = async () => {
@@ -32,14 +35,13 @@ const Cart = () => {
         }
     }, [cartItems])
 
-    console.log(cartItems);
-
     // const freeShippingThreshold = 15000
     const totalPieces = cartItems?.items?.length ?? 0
 
     // Helper functions as requested
-    const formatCurrency = (amount, currency = 'INR') =>
-        `${currency} ${Number(amount).toLocaleString('en-IN')}`
+    const formatCurrency = (amount, currency = 'INR') => {
+        return `${currency} ${Number(amount).toLocaleString('en-IN')}`
+    }
 
     const getVariantDetails = (item) => {
         return item.product.variants
@@ -48,6 +50,34 @@ const Cart = () => {
     const getDisplayImage = (item) => {
         const variant = getVariantDetails(item)
         return variant?.images?.[0]?.url || item.product.images?.[0]?.url
+    }
+
+    async function handleCheckout() {
+        const order = await handleCreateCartOrder()
+        console.log(order);
+
+        const options = {
+            key: "rzp_test_ShfS7mguZ9pDu5",
+            amount: order.amount, // Amount in paise
+            currency: order.currency,
+            name: "Snitch",
+            description: "Test Transaction",
+            order_id: order.id, // Generate order_id on server
+            handler: (response) => {
+                console.log(response);
+                alert("Payment Successful!");
+            },
+            prefill: {
+                name: user?.fullname,
+                email: user?.email,
+                contact: user?.contact || "0000000000",
+            },
+            theme: {
+                color: "#F37254",
+            },
+        };
+        const razorpayInstance = new Razorpay(options);
+        razorpayInstance.open();
     }
 
     return (
@@ -219,10 +249,10 @@ const Cart = () => {
                                 </div>
                             </div>
 
-                            <button className="group relative w-full mt-10 overflow-hidden rounded-2xl bg-white p-5 transition-all active:scale-95">
+                            <button onClick={handleCheckout} className="group cursor-pointer active:scale-[0.95] relative w-full mt-10 overflow-hidden rounded-2xl bg-white p-5 transition-all active:scale-95">
                                 <div className="absolute inset-0 bg-[#aa3905] group-hover:opacity-10 transition-opacity"></div>
                                 <span className="relative text-slate-900 text-sm font-black uppercase tracking-[0.2em]">
-                                    Secure Checkout
+                                    Proceed to Checkout
                                 </span>
                             </button>
 
