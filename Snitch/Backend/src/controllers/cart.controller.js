@@ -202,4 +202,13 @@ export const verifyOrderController = async (req, res) => {
         })
     }
 
+    const isValid = paymentModel.verifyPaymentSignature({ razorpay_order_id, razorpay_payment_id, razorpay_signature })
+
+    if(!isValid){
+        return res.status(400).json({
+            message: "Invalid payment signature",
+            success: false
+        })
+    }
+
 }
