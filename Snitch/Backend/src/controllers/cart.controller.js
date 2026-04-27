@@ -143,6 +143,27 @@ export const incremnentCartQuantity = async (req, res) => {
 
 export const decrementCartQuantity = async (req, res) => {
     const { productId, variantId } = req.params
+
+    const product = await productModel.findOne({
+        _id: productId,
+        "variants._id": variantId
+    })
+
+    if (!product) {
+        return res.status(404).json({
+            message: "Product or variant not found",
+            success: false
+        })
+    }
+
+    const cart = await cartModel.findOne({ user: req.user._id })
+
+    if (!cart) {
+        return res.status(404).json({
+            message: "Cart not found",
+            success: false
+        })
+    }
 }
 
 export const createOrderController = async (req, res) => {
@@ -221,5 +242,7 @@ export const verifyOrderController = async (req, res) => {
         message: "Payment verified successfully",
         success: true
     })
+
+
 
 }
