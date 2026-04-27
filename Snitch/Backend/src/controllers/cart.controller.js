@@ -211,4 +211,15 @@ export const verifyOrderController = async (req, res) => {
         })
     }
 
+    payment.razorpay.paymentId = razorpay_payment_id
+    payment.razorpay.signature = razorpay_signature
+    payment.status = "completed"
+
+    await payment.save()
+
+    return res.status(200).json({
+        message: "Payment verified successfully",
+        success: true
+    })
+
 }
