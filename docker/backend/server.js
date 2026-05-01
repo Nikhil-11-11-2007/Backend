@@ -1,7 +1,29 @@
-import app from './src/app.js';
+import express from 'express';
+import morgan from 'morgan';
+import cors from 'cors';
 
-const PORT = process.env.PORT || 3000;
+const app = express();
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+app.use(morgan('dev'));
+
+app.get("/api/helth", (req, res) => {
+    res.json({ status: 'ok' });
+});
+
+app.get('/api/hello', (req, res) => {
+    res.json({ message: 'Hello from the server!' });
+});
+
+app.get("/api/users", (req, res) => {
+    const users = [
+        { id: 1, name: 'Alice' },
+        { id: 2, name: 'Bob' },
+        { id: 3, name: 'Charlie' },
+        { id: 4, name: 'David' },
+    ];
+    res.status(200).json(users);
+});
+
+app.listen(3000, () => {
+    console.log('Server is running on http://localhost:3000');
 });
